@@ -9,6 +9,6 @@ public class Task implements Runnable{
 
 
     @Override
-    public void run(){
+    public void run(){ // el run es el que farà la tasca al ser executada al fil.
         System.out.println("Tasca de manteniment " + id + ": Esdeveniment del sistema enregistrat");    }
 }
