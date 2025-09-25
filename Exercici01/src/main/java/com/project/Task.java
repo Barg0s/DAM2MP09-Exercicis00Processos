@@ -1,19 +1,17 @@
 package com.project;
 
-public class Task implements Runnable{
-    private  int id;
-    private String enviador;
-    private  String destinatari;
-    private  int quantitat;
-    public Task(int id,String enviador,String destinatari){
-        this.id = id; 
-        this.enviador = enviador;
-        this.destinatari = destinatari;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Task implements Runnable {
+    private ConcurrentHashMap<String, Double> dades;
+
+    public Task(ConcurrentHashMap<String, Double> dades) {
+        this.dades = dades;
     }
 
-
     @Override
-    public void run(){
-        System.out.println("El compte" + enviador + "envia" + quantitat + "€ al compte" + destinatari);
+    public void run() {
+        dades.put("saldo", 200.0);
+        System.out.println("Transferencia rebuda: " + dades.get("saldo") + "€");
     }
 }

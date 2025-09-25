@@ -1,18 +1,19 @@
 package com.project;
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.util.concurrent.Callable;
+import java.util.Map;
 
-public class Task2 implements Callable<Integer>{
-    private  int id;
+public class Task2 implements Callable<Double> {
+    private ConcurrentHashMap<String, Double> dades;
 
-    public Task2(int id){
-        this.id = id; 
+    public Task2(ConcurrentHashMap<String, Double> dades) {
+        this.dades = dades;
     }
 
-
     @Override
-    public Integer call(){
-        
-        return r;
+    public Double call() {
+        System.out.println("Saldo final");
+        return dades.get("saldo");
     }
 }

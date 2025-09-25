@@ -1,30 +1,39 @@
 package com.project;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Main {
     public static void main(String[] args) {
+        
+        int quantitat = 2;
+        ExecutorService es = Executors.newFixedThreadPool(3);
+        try {
+            CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> {
+                System.out.println("Validant dades");
+                if (quantitat > 0){
+                    return quantitat;
 
-		// Crear un executor amb un pool de 3 fils
-        ExecutorService executor = Executors.newFixedThreadPool(3);
+                }else{
+                    return 0;
+                }
+            }, es);
 
-        // Llista per emmagatzemar les tasques
-        List<Runnable> tasks = new ArrayList<>();
+            CompletableFuture<Integer> f2 = f1.thenApplyAsync(result -> {
+                System.out.println("Calculant dades");
+                return result * 5;
+            }, es);
 
-        // Primer bucle: Generar tasques de 0 a 9
-        for (int i = 0; i < 10; i++) {
-            tasks.add(new Task(i));
+
+            CompletableFuture<Void> f3 = f2.thenAccept(result -> {
+                System.out.println("El preu final es: " + result + "€");
+            });
+
+            f3.join();
+
+        } finally {
+            es.shutdown();
         }
-
-        // Segon bucle: Executar les tasques
-        for (Runnable task : tasks) {
-            executor.execute(task);
-        }
-
-        // Tancar l'executor
-        executor.shutdown();
     }
 }

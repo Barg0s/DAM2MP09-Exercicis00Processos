@@ -1,11 +1,34 @@
 package com.project;
 
-class Main {
-	public static void main (String ... args){
-        new ThreadDemo("Info pel thread").start();
-	
-		new Thread(new Task("Info per la tasca 0B"), "Thread 0").start();
-		
-		new Thread(new Task("Info per la tasca 1B"), "Thread 1").start();
-	}
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class Main {
+    public static void main(String[] args) {
+
+
+        ExecutorService es = Executors.newFixedThreadPool(3);
+
+
+        ConcurrentHashMap<String,Double> dadesBancaries = new ConcurrentHashMap<>();
+        
+        
+        
+        es.execute(new Task(dadesBancaries));
+        es.execute(new Task1(dadesBancaries));
+
+        Future<Double> resultat = es.submit(new Task2(dadesBancaries));
+ 
+        try {
+            System.out.println(resultat.get());            
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        es.shutdown();    
+    }
+    
 }
+
