@@ -20,10 +20,10 @@ public class Main {
         es.execute(new Task(dadesBancaries));
         es.execute(new Task1(dadesBancaries));
 
-        Future<Double> resultat = es.submit(new Task2(dadesBancaries));
+        Future<Double> resultat = es.submit(new Task2(dadesBancaries)); //resultat pendant d'una operacio
  
         try {
-            System.out.println(resultat.get());            
+            System.out.println(resultat.get());   //bloquea fil i retorna el resultat de la task         
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

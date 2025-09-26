@@ -10,7 +10,7 @@ public class Main {
         int quantitat = 2;
         ExecutorService es = Executors.newFixedThreadPool(3);
         try {
-            CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> { //al ser asincrona,se ejecuta cuando haya un thread libre
+            CompletableFuture<Integer> f1 = CompletableFuture.supplyAsync(() -> { //al ser asincrona,s'executa quan hi exsteixi un fil lliure
                 System.out.println("Validant dades");
                 if (quantitat > 0){
                     return quantitat;
@@ -20,13 +20,13 @@ public class Main {
                 }
             }, es);
 
-            CompletableFuture<Integer> f2 = f1.thenApplyAsync(result -> { //se aplica justo al acabar el f1,tmb asincrona.
+            CompletableFuture<Integer> f2 = f1.thenApplyAsync(result -> { //se aplica quan acaba l'f1,asincrona.
                 System.out.println("Calculant dades");
                 return result * 5;
             }, es);
 
 
-            f2.thenAccept(result -> { //executa una accion al acabar f2,de las que no devuelven nada.
+            f2.thenAccept(result -> { //executa una accio al acabar f2,que no retorna res.
                 System.out.println("El preu final es: " + result + "€");
             });
 

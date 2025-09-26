@@ -12,7 +12,7 @@ public class Task2 implements Callable<Double> {
     }
 
     @Override
-    public Double call() { //parecido a run,pero devuelve un valor que se pilla con .get()
+    public Double call() { //com el run,pero retorna un valor que s'agafa amb .get()
         System.out.println("Saldo final");
         return dades.get("saldo");
     }
