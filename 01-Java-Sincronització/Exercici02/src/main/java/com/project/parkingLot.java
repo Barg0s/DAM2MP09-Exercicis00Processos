@@ -11,7 +11,7 @@ class ParkingLot {
 
     public void entrar(String nom) {
         try {
-            if (!semafor.tryAcquire()) {
+            if (!semafor.tryAcquire()) { //https://learn.microsoft.com/es-es/dotnet/api/java.util.concurrent.semaphore.tryacquire?view=net-android-34.0
                 System.out.println(nom + " espera, aparcament ple.");
                 semafor.acquire(); 
             }

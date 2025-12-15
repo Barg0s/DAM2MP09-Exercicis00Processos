@@ -1,8 +1,6 @@
 package com.project;
-import java.util.concurrent.ConcurrentHashMap;
-
 import java.util.concurrent.Callable;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Task2 implements Callable<Double> {
     private ConcurrentHashMap<String, Double> dades;
