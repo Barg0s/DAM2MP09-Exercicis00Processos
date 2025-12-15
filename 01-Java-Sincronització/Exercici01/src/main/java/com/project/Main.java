@@ -1,34 +1,68 @@
 package com.project;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.List;
 
 public class Main {
+
+    // Variables compartides a nivell de classe
+    private static double suma;
+    private static double mitjana;
+    private static double desviacio;
+
     public static void main(String[] args) {
 
+        // Dades d'exemple en llista
+        List<Double> dades = List.of(10.0, 20.0, 30.0, 40.0, 50.0);
 
-        ExecutorService es = Executors.newFixedThreadPool(3);
+        CyclicBarrier barrier = new CyclicBarrier(3, () -> {
+            System.out.println("=== Tots els calculs han acabat ===");
+            System.out.println("Suma: " + suma);
+            System.out.println("Mitjana: " + mitjana);
+            System.out.println("Desviacio estandard: " + desviacio);
+        });
 
+        ExecutorService executor = Executors.newFixedThreadPool(3);
 
-        ConcurrentHashMap<String,Double> dadesBancaries = new ConcurrentHashMap<>();
-        
-        
-        
-        es.execute(new Task(dadesBancaries));
-        es.execute(new Task1(dadesBancaries));
-
-        Future<Double> resultat = es.submit(new Task2(dadesBancaries)); //resultat pendant d'una operacio
- 
-        try {
-            System.out.println(resultat.get());   //bloquea fil i retorna el resultat de la task         
-            } catch (InterruptedException | ExecutionException e) {
+        Runnable tascaSuma = () -> {
+            suma = dades.stream().mapToDouble(Double::doubleValue).sum();
+            try {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
             }
-        es.shutdown();    
-    }
-    
-}
+        };
 
+¡        Runnable tascaMitjana = () -> {
+            mitjana = dades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            try {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        };
+
+        Runnable tascaDesviacio = () -> {
+            double mitjanaLocal = dades.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+            desviacio = Math.sqrt(dades.stream()
+                    .mapToDouble(d -> Math.pow(d - mitjanaLocal, 2))
+                    .sum() / dades.size());
+            try {
+                barrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        };
+
+        executor.submit(tascaSuma);
+        executor.submit(tascaMitjana);
+        executor.submit(tascaDesviacio);
+
+        executor.shutdown();
+        try { 
+            executor.awaitTermination(5, TimeUnit.SECONDS); 
+        } catch (InterruptedException ignored) {
+            ignored.printStackTrace();
+        }
+    }
+}
